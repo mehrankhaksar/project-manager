@@ -13,7 +13,7 @@ export default function Input({
   isTextarea = false,
   ...props
 }: InputPropsType) {
-  const inputClassname =
+  const classname =
     "w-full p-1 border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600";
 
   return (
@@ -23,12 +23,12 @@ export default function Input({
       </label>
       {isTextarea ? (
         <textarea
-          className={inputClassname}
+          className={classname}
           {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
         />
       ) : (
         <input
-          className={inputClassname}
+          className={classname}
           {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
         />
       )}
