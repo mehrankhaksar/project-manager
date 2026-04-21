@@ -4,6 +4,10 @@
   --font-display: "Quicksand", "sans-serif";
 }
 
+button {
+  @apply cursor-pointer;
+}
+
 body {
   @apply font-display;
 }
