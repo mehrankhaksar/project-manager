@@ -6,8 +6,10 @@ import Modal, { type ModalRefType } from "./Modal";
 
 export default function NewProject({
   onCreateNewProject,
+  onCancel,
 }: {
   onCreateNewProject: (newProject: IProject) => void;
+  onCancel: () => void;
 }) {
   const dialogRef = useRef<ModalRefType>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -28,13 +30,17 @@ export default function NewProject({
       dueDate.trim() === ""
     ) {
       dialogRef.current?.open();
+      return;
     }
 
-    onCreateNewProject({
+    const newProject = {
+      id: Math.random(),
       title,
       description,
       dueDate,
-    });
+    };
+
+    onCreateNewProject(newProject);
   };
 
   return (
@@ -53,7 +59,9 @@ export default function NewProject({
       <div className="w-140 mt-16">
         <menu className="flex items-center justify-end gap-4 my-8">
           <li>
-            <Button variant="ghost">Cancel</Button>
+            <Button variant="ghost" onClick={onCancel}>
+              Cancel
+            </Button>
           </li>
           <li>
             <Button onClick={onSave}>Save</Button>

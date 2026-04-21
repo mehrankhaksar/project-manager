@@ -10,31 +10,34 @@ interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export default function Button({
   children,
   variant = "default",
+  className = "",
   ...props
 }: IButtonProps) {
-  let className =
+  let variantsClassName =
     "px-4 py-2 text-xs md:text-base rounded-xl transition-colors font-semibold";
 
   switch (variant) {
     case "default":
-      className = className.concat(
+      variantsClassName = variantsClassName.concat(
         " bg-stone-900 text-white hover:bg-stone-600",
       );
       break;
 
     case "secondary":
-      className = className.concat(
+      variantsClassName = variantsClassName.concat(
         " bg-stone-700 text-stone-400 hover:bg-stone-600 hover:text-stone-100",
       );
       break;
 
     case "ghost":
-      className = className.concat(" text-stone-800 hover:text-stone-950");
+      variantsClassName = variantsClassName.concat(
+        " text-stone-800 hover:text-stone-950",
+      );
       break;
   }
 
   return (
-    <button className={className} {...props}>
+    <button className={`${variantsClassName} ${className}`} {...props}>
       {children}
     </button>
   );

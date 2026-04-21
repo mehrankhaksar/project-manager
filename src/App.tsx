@@ -9,6 +9,7 @@ type ProjectDataType = {
 };
 
 export interface IProject {
+  id: number;
   title: string;
   description: string;
   dueDate: string;
@@ -24,9 +25,13 @@ export default function App() {
     setProjectData((prev) => ({ ...prev, selectedProjectId: null }));
   };
 
+  const onCancelCreateNewProject = () => {
+    setProjectData((prev) => ({ ...prev, selectedProjectId: undefined }));
+  };
+
   const onCreateNewProject = (newProject: IProject) => {
     setProjectData((prev) => ({
-      ...prev,
+      selectedProjectId: undefined,
       projects: [...prev.projects, newProject],
     }));
   };
@@ -35,7 +40,12 @@ export default function App() {
 
   switch (projectData.selectedProjectId) {
     case null:
-      content = <NewProject onCreateNewProject={onCreateNewProject} />;
+      content = (
+        <NewProject
+          onCreateNewProject={onCreateNewProject}
+          onCancel={onCancelCreateNewProject}
+        />
+      );
       break;
 
     case undefined:
@@ -48,8 +58,11 @@ export default function App() {
   }
 
   return (
-    <main className="h-screen flex gap-8">
-      <ProjectSidebar onStartCreateNewProject={onStartCreateNewProject} />
+    <main className="h-screen flex gap-8 overflow-hidden">
+      <ProjectSidebar
+        onStartCreateNewProject={onStartCreateNewProject}
+        projects={projectData.projects}
+      />
       {content}
     </main>
   );
