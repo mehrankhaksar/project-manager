@@ -5,8 +5,14 @@ import NewProject from "./components/NewProject";
 
 type ProjectDataType = {
   selectedProjectId: number | null | undefined;
-  projects: [];
+  projects: IProject[];
 };
+
+export interface IProject {
+  title: string;
+  description: string;
+  dueDate: string;
+}
 
 export default function App() {
   const [projectData, setProjectData] = useState<ProjectDataType>({
@@ -18,11 +24,18 @@ export default function App() {
     setProjectData((prev) => ({ ...prev, selectedProjectId: null }));
   };
 
+  const onCreateNewProject = (newProject: IProject) => {
+    setProjectData((prev) => ({
+      ...prev,
+      projects: [...prev.projects, newProject],
+    }));
+  };
+
   let content;
 
   switch (projectData.selectedProjectId) {
     case null:
-      content = <NewProject />;
+      content = <NewProject onCreateNewProject={onCreateNewProject} />;
       break;
 
     case undefined:

@@ -1,4 +1,5 @@
 import type React from "react";
+import { forwardRef } from "react";
 
 type InputType =
   | ({ isTextarea?: false } & React.InputHTMLAttributes<HTMLInputElement>)
@@ -8,12 +9,11 @@ type InputPropsType = InputType & {
   label: string;
 };
 
-export default function Input({
-  label,
-  isTextarea = false,
-  ...props
-}: InputPropsType) {
-  const classname =
+const Input = forwardRef<
+  HTMLInputElement | HTMLTextAreaElement,
+  InputPropsType
+>(function Input({ label, isTextarea = false, ...props }, ref) {
+  const className =
     "w-full p-1 border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600";
 
   return (
@@ -21,17 +21,26 @@ export default function Input({
       <label className="text-sm font-bold uppercase text-stone-500">
         {label}
       </label>
+
       {isTextarea ? (
         <textarea
-          className={classname}
+          ref={ref as React.Ref<HTMLTextAreaElement>}
+          className={className}
           {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
         />
       ) : (
         <input
-          className={classname}
+          type={
+            (props as React.InputHTMLAttributes<HTMLInputElement>).type ??
+            "text"
+          }
+          ref={ref as React.Ref<HTMLInputElement>}
+          className={className}
           {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
         />
       )}
     </p>
   );
-}
+});
+
+export default Input;
