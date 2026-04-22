@@ -8,6 +8,7 @@ export default function NewProject() {
   const { onCreateNewProject, onCancelCreateNewProject } = useProject();
 
   const dialogRef = useRef<ModalRefType>(null);
+  
   const titleRef = useRef<HTMLInputElement>(null);
   const dueDateRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);

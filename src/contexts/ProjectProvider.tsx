@@ -1,9 +1,11 @@
 import React from "react";
 import type { IProject } from "../types/project";
+import type { ITask } from "../types/task";
 
 type ProjectDataType = {
   selectedProjectId: number | null | undefined;
   projects: IProject[];
+  tasks: ITask[];
 };
 
 type ProjectContextType = {
@@ -13,6 +15,8 @@ type ProjectContextType = {
   onCreateNewProject: (newProject: IProject) => void;
   onSelectProject: (id: number) => void;
   onDeleteProject: () => void;
+  onAddNewProjectTask: (newTask: ITask) => void;
+  onRemoveProjectTask: (id: number) => void;
 };
 
 const ProjectContext = React.createContext<ProjectContextType | null>(null);
@@ -25,6 +29,7 @@ export default function ProjectProvider({
   const [projectData, setProjectData] = React.useState<ProjectDataType>({
     selectedProjectId: undefined,
     projects: [],
+    tasks: [],
   });
 
   const onStartCreateNewProject = () => {
@@ -37,8 +42,23 @@ export default function ProjectProvider({
 
   const onCreateNewProject = (newProject: IProject) => {
     setProjectData((prev) => ({
+      ...prev,
       selectedProjectId: undefined,
       projects: [...prev.projects, newProject],
+    }));
+  };
+
+  const onAddNewProjectTask = (newTask: ITask) => {
+    setProjectData((prev) => ({
+      ...prev,
+      tasks: [...prev.tasks, newTask],
+    }));
+  };
+
+  const onRemoveProjectTask = (id: number) => {
+    setProjectData((prev) => ({
+      ...prev,
+      tasks: prev.tasks.filter((task) => task.id !== id),
     }));
   };
 
@@ -51,6 +71,7 @@ export default function ProjectProvider({
 
   const onDeleteProject = () => {
     setProjectData((prev) => ({
+      ...prev,
       selectedProjectId: undefined,
       projects: prev.projects.filter(
         (prevProject) => prevProject.id !== prev.selectedProjectId,
@@ -65,6 +86,8 @@ export default function ProjectProvider({
     onCreateNewProject,
     onSelectProject,
     onDeleteProject,
+    onAddNewProjectTask,
+    onRemoveProjectTask,
   };
 
   return (

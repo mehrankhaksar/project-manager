@@ -1,6 +1,7 @@
 import { useProject } from "../contexts/ProjectProvider";
 import type { IProject } from "../types/project";
 import Button from "./Button";
+import ProjectTasks from "./ProjectTasks";
 
 export default function ProjectDetails({
   title,
@@ -27,7 +28,7 @@ export default function ProjectDetails({
         <span className="mb-4 text-stone-400">{formattedDueDate}</span>
         <p className="text-stone-600 whitespace-pre-wrap">{description}</p>
       </header>
-      Tasks
+      <ProjectTasks />
     </div>
   );
 }

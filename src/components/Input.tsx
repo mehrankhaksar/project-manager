@@ -6,7 +6,7 @@ type InputType =
   | ({ isTextarea: true } & React.TextareaHTMLAttributes<HTMLTextAreaElement>);
 
 type InputPropsType = InputType & {
-  label: string;
+  label?: string;
 };
 
 const Input = forwardRef<
