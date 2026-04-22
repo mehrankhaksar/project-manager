@@ -8,6 +8,33 @@ type ProjectDataType = {
   tasks: ITask[];
 };
 
+type ProjectDataActionType =
+  | {
+      type: "CREATE_NEW_PROJECT";
+      payload: { newProject: IProject };
+    }
+  | {
+      type: "DELETE_PROJECT";
+    }
+  | {
+      type: "ADD_NEW_PROJECT_TASK";
+      payload: { newTask: ITask };
+    }
+  | {
+      type: "REMOVE_PROJECT_TASK";
+      payload: { id: number };
+    }
+  | {
+      type: "SELECT_PROJECT";
+      payload: { id: number };
+    }
+  | {
+      type: "START_CREATE_NEW_PROJECT";
+    }
+  | {
+      type: "CANCEL_CREATE_NEW_PROJECT";
+    };
+
 type ProjectContextType = {
   projectData: ProjectDataType;
   onStartCreateNewProject: () => void;
@@ -21,62 +48,89 @@ type ProjectContextType = {
 
 const ProjectContext = React.createContext<ProjectContextType | null>(null);
 
+const projectDataReducer = (
+  state: ProjectDataType,
+  action: ProjectDataActionType,
+) => {
+  switch (action.type) {
+    case "START_CREATE_NEW_PROJECT":
+      return { ...state, selectedProjectId: null };
+    case "CANCEL_CREATE_NEW_PROJECT":
+      return { ...state, selectedProjectId: undefined };
+    case "CREATE_NEW_PROJECT":
+      return {
+        ...state,
+        selectedProjectId: undefined,
+        projects: [...state.projects, action.payload.newProject],
+      };
+    case "DELETE_PROJECT":
+      return {
+        ...state,
+        selectedProjectId: undefined,
+        projects: state.projects.filter(
+          (project) => project.id !== state.selectedProjectId,
+        ),
+        tasks: state.tasks.filter(
+          (task) => task.projectId !== state.selectedProjectId,
+        ),
+      };
+    case "SELECT_PROJECT":
+      return {
+        ...state,
+        selectedProjectId: action.payload.id,
+      };
+    case "ADD_NEW_PROJECT_TASK":
+      return {
+        ...state,
+        tasks: [...state.tasks, action.payload.newTask],
+      };
+    case "REMOVE_PROJECT_TASK":
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task.id !== action.payload.id),
+      };
+    default:
+      return state;
+  }
+};
+
 export default function ProjectProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [projectData, setProjectData] = React.useState<ProjectDataType>({
+  const [projectData, dispatch] = React.useReducer(projectDataReducer, {
     selectedProjectId: undefined,
     projects: [],
     tasks: [],
   });
 
   const onStartCreateNewProject = () => {
-    setProjectData((prev) => ({ ...prev, selectedProjectId: null }));
+    dispatch({ type: "START_CREATE_NEW_PROJECT" });
   };
 
   const onCancelCreateNewProject = () => {
-    setProjectData((prev) => ({ ...prev, selectedProjectId: undefined }));
+    dispatch({ type: "CANCEL_CREATE_NEW_PROJECT" });
   };
 
   const onCreateNewProject = (newProject: IProject) => {
-    setProjectData((prev) => ({
-      ...prev,
-      selectedProjectId: undefined,
-      projects: [...prev.projects, newProject],
-    }));
-  };
-
-  const onAddNewProjectTask = (newTask: ITask) => {
-    setProjectData((prev) => ({
-      ...prev,
-      tasks: [...prev.tasks, newTask],
-    }));
-  };
-
-  const onRemoveProjectTask = (id: number) => {
-    setProjectData((prev) => ({
-      ...prev,
-      tasks: prev.tasks.filter((task) => task.id !== id),
-    }));
-  };
-
-  const onSelectProject = (id: number) => {
-    setProjectData((prev) => ({
-      ...prev,
-      selectedProjectId: id,
-    }));
+    dispatch({ type: "CREATE_NEW_PROJECT", payload: { newProject } });
   };
 
   const onDeleteProject = () => {
-    setProjectData((prev) => ({
-      ...prev,
-      selectedProjectId: undefined,
-      projects: prev.projects.filter(
-        (prevProject) => prevProject.id !== prev.selectedProjectId,
-      ),
-    }));
+    dispatch({ type: "DELETE_PROJECT" });
+  };
+
+  const onSelectProject = (id: number) => {
+    dispatch({ type: "SELECT_PROJECT", payload: { id } });
+  };
+
+  const onAddNewProjectTask = (newTask: ITask) => {
+    dispatch({ type: "ADD_NEW_PROJECT_TASK", payload: { newTask } });
+  };
+
+  const onRemoveProjectTask = (id: number) => {
+    dispatch({ type: "REMOVE_PROJECT_TASK", payload: { id } });
   };
 
   const ctxValue = {
