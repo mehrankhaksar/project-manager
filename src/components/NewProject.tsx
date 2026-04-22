@@ -1,16 +1,12 @@
 import { useRef } from "react";
 import Button from "./Button";
 import Input from "./Input";
-import type { IProject } from "../App";
 import Modal, { type ModalRefType } from "./Modal";
+import { useProject } from "../contexts/ProjectProvider";
 
-export default function NewProject({
-  onCreateNewProject,
-  onCancel,
-}: {
-  onCreateNewProject: (newProject: IProject) => void;
-  onCancel: () => void;
-}) {
+export default function NewProject() {
+  const { onCreateNewProject, onCancelCreateNewProject } = useProject();
+
   const dialogRef = useRef<ModalRefType>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const dueDateRef = useRef<HTMLInputElement>(null);
@@ -59,7 +55,7 @@ export default function NewProject({
       <div className="w-140 mt-16">
         <menu className="flex items-center justify-end gap-4 my-8">
           <li>
-            <Button variant="ghost" onClick={onCancel}>
+            <Button variant="ghost" onClick={onCancelCreateNewProject}>
               Cancel
             </Button>
           </li>

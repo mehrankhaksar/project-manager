@@ -1,6 +1,6 @@
 import type React from "react";
 
-type VariantType = "default" | "secondary" | "ghost";
+type VariantType = "default" | "secondary" | "ghost" | "danger";
 
 interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: VariantType;
@@ -32,6 +32,12 @@ export default function Button({
     case "ghost":
       variantsClassName = variantsClassName.concat(
         " text-stone-800 hover:text-stone-950",
+      );
+      break;
+
+    case "danger":
+      variantsClassName = variantsClassName.concat(
+        " bg-red-600 text-white hover:bg-red-700",
       );
       break;
   }

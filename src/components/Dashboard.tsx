@@ -1,17 +1,16 @@
 import NoProjects from "../assets/no-projects.png";
+import { useProject } from "../contexts/ProjectProvider";
 import Button from "./Button";
 
-export default function Dashboard({
-  onStartCreateNewProject,
-}: {
-  onStartCreateNewProject: () => void;
-}) {
+export default function Dashboard() {
+  const { onStartCreateNewProject } = useProject();
+
   return (
     <div className="mt-24 text-center w-2/3">
       <img
         src={NoProjects}
         alt="No Projects"
-        className="size-1/6 object-contain mx-auto"
+        className="size-32 object-contain mx-auto"
       />
       <h2 className="text-xl font-bold text-stone-500 my-4">
         No Project Selected

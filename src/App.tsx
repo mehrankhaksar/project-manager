@@ -1,69 +1,38 @@
-import { useState } from "react";
 import Dashboard from "./components/Dashboard";
 import ProjectSidebar from "./components/ProjectSidebar";
 import NewProject from "./components/NewProject";
-
-type ProjectDataType = {
-  selectedProjectId: number | null | undefined;
-  projects: IProject[];
-};
-
-export interface IProject {
-  id: number;
-  title: string;
-  description: string;
-  dueDate: string;
-}
+import ProjectDetails from "./components/ProjectDetails";
+import ProjectProvider, { useProject } from "./contexts/ProjectProvider";
 
 export default function App() {
-  const [projectData, setProjectData] = useState<ProjectDataType>({
-    selectedProjectId: undefined,
-    projects: [],
-  });
-
-  const onStartCreateNewProject = () => {
-    setProjectData((prev) => ({ ...prev, selectedProjectId: null }));
-  };
-
-  const onCancelCreateNewProject = () => {
-    setProjectData((prev) => ({ ...prev, selectedProjectId: undefined }));
-  };
-
-  const onCreateNewProject = (newProject: IProject) => {
-    setProjectData((prev) => ({
-      selectedProjectId: undefined,
-      projects: [...prev.projects, newProject],
-    }));
-  };
+  const { projectData } = useProject();
 
   let content;
 
   switch (projectData.selectedProjectId) {
     case null:
-      content = (
-        <NewProject
-          onCreateNewProject={onCreateNewProject}
-          onCancel={onCancelCreateNewProject}
-        />
-      );
+      content = <NewProject />;
       break;
 
     case undefined:
-      content = <Dashboard onStartCreateNewProject={onStartCreateNewProject} />;
+      content = <Dashboard />;
       break;
 
     default:
-      content = <Dashboard onStartCreateNewProject={onStartCreateNewProject} />;
+      const selectedProject = projectData.projects.find(
+        (project) => project.id === projectData.selectedProjectId,
+      );
+      if (selectedProject) content = <ProjectDetails {...selectedProject} />;
+      else content = <Dashboard />;
       break;
   }
 
   return (
-    <main className="h-screen flex gap-8 overflow-hidden">
-      <ProjectSidebar
-        onStartCreateNewProject={onStartCreateNewProject}
-        projects={projectData.projects}
-      />
-      {content}
-    </main>
+    <ProjectProvider>
+      <main className="h-screen flex gap-8 overflow-hidden">
+        <ProjectSidebar />
+        {content}
+      </main>
+    </ProjectProvider>
   );
 }
